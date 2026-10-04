@@ -97,7 +97,7 @@ const gaze=new THREE.Vector2();
 const bubble=document.createElement('div');bubble.className='speech-bubble';bubble.setAttribute('role','status');bubble.setAttribute('aria-live','polite');document.querySelector('main').append(bubble);
 const sayings=['漏了。咋了。','我有缺口，也有脾气。','水满了会溢，我满了会怼。','今天不装了。真装不下。','杯子都破了，还讲什么杯德。','没装稳。也没装乖。'];
 let sayingIndex=0,bubbleTimer,introSaid=false;playVoice('liuliu');addEventListener('pointerdown',()=>playVoice('liuliu'),{once:true});
-function speak(){bubble.textContent=sayings[sayingIndex++%sayings.length];bubble.classList.remove('show');void bubble.offsetWidth;bubble.classList.add('show');clearTimeout(bubbleTimer);bubbleTimer=setTimeout(()=>bubble.classList.remove('show'),4400);}
+function speak(){bubble.textContent=sayings[0];sayingIndex++;bubble.classList.remove('show');void bubble.offsetWidth;bubble.classList.add('show');clearTimeout(bubbleTimer);bubbleTimer=setTimeout(()=>bubble.classList.remove('show'),4400);}
 function aim(e){pointer.set(e.clientX/innerWidth*2-1,1-e.clientY/innerHeight*2);}
 canvas.style.touchAction='none';canvas.addEventListener('dblclick',()=>{orbitYaw=0;orbitPitch=0;});addEventListener('pointermove',aim);
 function boing(){playVoice('liuliu');canvas.dataset.sound='liuliu';}
@@ -130,6 +130,7 @@ function animate(now){
  const impact=reduce?0:Math.exp(-burst*7)*(intro>=.9?1:0);
  character.position.x=Math.sin(burst*70)*impact*.075;character.rotation.z=Math.cos(burst*55)*impact*.045;
  const arrival=reduce?1:THREE.MathUtils.smoothstep(intro,1.05,2.6);
+ const plug=reduce?1:THREE.MathUtils.smoothstep(intro,1.38,2.45);leakFill.visible=plug>0;leakFill.scale.set(.85*plug,.34*plug,.48*plug);canvas.dataset.plug=plug.toFixed(3);
  spill.scale.set((1+amount*.3)*Math.max(.001,arrival),(1-amount*.35+(reduce?0:Math.sin(time*3)*.022))*Math.max(.001,arrival),(1-amount*.1)*Math.max(.001,arrival));spill.rotation.y=r*.08;
  drops.forEach((drop,i)=>{const phase=(burst*1.7+i*.24)%1;drop.visible=!reduce&&intro>1&&intro<2.8;drop.position.set(.25+phase*(.65+i*.12),.3+Math.sin(phase*Math.PI)*.2-phase*.18,.86+phase*.35);drop.scale.setScalar(.065*(1-phase*.3));});
  canvas.dataset.flow=intro<3.8&&!reduce?'pouring':'settled';
