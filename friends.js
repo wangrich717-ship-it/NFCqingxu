@@ -37,7 +37,7 @@ if(spec.id==='huanhuan'){
  blob([[M,-.36,-.77],[C,-.98,-.82,-.44,-.32,-.61,.09],[C,-1,.74,-.46,1.13,.02,.79],[C,.41,.5,.48,-.18,.2,-.49],[Q,-.02,-.76,-.36,-.77]],mats.green,parts.lean);
  eye(-.48,.39,{parent:parts.lean,size:.105});eye(-.1,.58,{parent:parts.lean,size:.13});stroke([[-.22,.82],[.04,.78]],mats.black,.018,parts.lean);
 }else if(spec.id==='kongkong'){
- const s=new T.Shape();s.absellipse(0,0,.87,.89,0,Math.PI*2,false);s.closePath();const hole=new T.Path();hole.absellipse(-.03,-.06,.4,.42,0,Math.PI*2,true);hole.closePath();s.holes.push(hole);parts.ring=mesh(s,mats.purple);eye(-.16,.61,{white:false,size:.09});eye(.16,.61,{white:false,size:.09});
+ parts.ring=new T.Mesh(new T.TorusGeometry(.65,.235,48,120),mats.purple);parts.ring.scale.y=1.02;root.add(parts.ring);eye(-.16,.61,{white:false,size:.09});eye(.16,.61,{white:false,size:.09});
  parts.hand=new T.Group();root.add(parts.hand);oval(.56,-.48,.25,.21,mats.lime,parts.hand,.34);for(let i=0;i<3;i++)oval(.38,-.31-i*.16,.12,.09,mats.lime,parts.hand,.35);
 }else if(spec.id==='chengcheng'){
  parts.arch=new T.Group();root.add(parts.arch);
