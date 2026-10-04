@@ -89,7 +89,7 @@ const shadowCanvas=document.createElement('canvas');shadowCanvas.width=128;shado
 const ctx=shadowCanvas.getContext('2d');const gradient=ctx.createRadialGradient(64,64,2,64,64,64);gradient.addColorStop(0,'rgba(113,88,58,.16)');gradient.addColorStop(.45,'rgba(113,88,58,.06)');gradient.addColorStop(1,'rgba(113,88,58,0)');ctx.fillStyle=gradient;ctx.fillRect(0,0,128,128);
 const shadow=new THREE.Mesh(new THREE.PlaneGeometry(4.8,3.2),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(shadowCanvas),transparent:true,depthWrite:false}));shadow.rotation.x=-Math.PI/2;shadow.position.set(.1,0,.4);scene.add(shadow);
 const squash=new Spring(),sway=new Spring(),bounce=new Spring();
-const pointer=new THREE.Vector2();let dragging=false,lastX=0,lastY=0,pressAt=0,pressTarget=0,last=performance.now(),time=0;
+const pointer=new THREE.Vector2();let orbitYaw=0,orbitPitch=0,dragMoved=false,startX=0,startY=0;let dragging=false,lastX=0,lastY=0,pressAt=0,pressTarget=0,last=performance.now(),time=0;
 const openedAt=performance.now();
 const gaze=new THREE.Vector2();
 const bubble=document.createElement('div');bubble.className='speech-bubble';bubble.setAttribute('role','status');bubble.setAttribute('aria-live','polite');document.querySelector('main').append(bubble);
@@ -107,9 +107,9 @@ function boing(){
  }catch{}
 }
 function tap(force=1){squash.kick(5.7*force);sway.kick((Math.random()-.5)*2.3);bounce.kick(3*force);boing();speak();if(navigator.vibrate)navigator.vibrate(12);canvas.dataset.interactions=String((+canvas.dataset.interactions||0)+1);}
-canvas.addEventListener('pointerdown',e=>{aim(e);dragging=true;lastX=e.clientX;lastY=e.clientY;pressAt=performance.now();pressTarget=-.17;canvas.setPointerCapture(e.pointerId);squash.kick(-2);});
-canvas.addEventListener('pointermove',e=>{pointer.set(e.clientX/innerWidth*2-1,1-e.clientY/innerHeight*2);if(dragging){sway.kick((e.clientX-lastX)*.025);squash.kick((e.clientY-lastY)*.009);lastX=e.clientX;lastY=e.clientY;}});
-function release(e){if(!dragging)return;dragging=false;pressTarget=0;tap(Math.min(1.5,1+(performance.now()-pressAt)/2000));if(canvas.hasPointerCapture(e.pointerId))canvas.releasePointerCapture(e.pointerId);}
+canvas.addEventListener('pointerdown',e=>{aim(e);dragging=true;dragMoved=false;startX=e.clientX;startY=e.clientY;lastX=e.clientX;lastY=e.clientY;pressAt=performance.now();pressTarget=-.17;canvas.setPointerCapture(e.pointerId);squash.kick(-2);});
+canvas.addEventListener('pointermove',e=>{pointer.set(e.clientX/innerWidth*2-1,1-e.clientY/innerHeight*2);if(dragging){if(Math.hypot(e.clientX-startX,e.clientY-startY)>7)dragMoved=true;if(dragMoved){orbitYaw+=(e.clientX-lastX)*.012;orbitPitch=Math.max(-1.25,Math.min(1.25,orbitPitch+(e.clientY-lastY)*.008));}sway.kick((e.clientX-lastX)*.025);squash.kick((e.clientY-lastY)*.009);lastX=e.clientX;lastY=e.clientY;}});
+function release(e){if(!dragging)return;dragging=false;pressTarget=0;if(!dragMoved)tap(Math.min(1.5,1+(performance.now()-pressAt)/2000));if(canvas.hasPointerCapture(e.pointerId))canvas.releasePointerCapture(e.pointerId);}
 canvas.addEventListener('pointerup',release);canvas.addEventListener('pointercancel',e=>{dragging=false;pressTarget=0;squash.kick(2);});
 canvas.addEventListener('keydown',e=>{if(e.code==='Space'||e.code==='Enter'){e.preventDefault();tap();}});
 function resize(){const w=innerWidth,h=innerHeight;renderer.setSize(w,h);camera.aspect=w/h;const distance=Math.max(5.9,5.5/camera.aspect);camera.position.set(distance*.06,.69+distance*.37,distance);camera.lookAt(-.02,.67,.25);camera.updateProjectionMatrix();}
@@ -122,7 +122,7 @@ function animate(now){
  const amount=reduce?q*.35:q;
  cup.scale.set(1+amount*.48-idle,1-amount*.65+idle,1+amount*.28);
  cup.rotation.z=-.075+r*.4+(reduce?0:Math.sin(time*1.5)*.018);
- cup.rotation.y=pointer.x*.09;character.position.y=Math.max(0,b*.37);
+ character.rotation.y=orbitYaw;character.rotation.x=orbitPitch;canvas.dataset.orbit=orbitYaw.toFixed(3);cup.rotation.y=pointer.x*.09;character.position.y=Math.max(0,b*.37);
  const arr=body.geometry.attributes.position.array;
  for(let i=0;i<arr.length;i+=3){const y=original[i+1];arr[i]=original[i]+Math.sin(y*4+time*12)*amount*.06;arr[i+1]=y;arr[i+2]=original[i+2]+Math.cos(y*3+time*11)*amount*.045;}
  body.geometry.attributes.position.needsUpdate=true;
