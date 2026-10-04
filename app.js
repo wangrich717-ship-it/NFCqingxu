@@ -69,6 +69,7 @@ const handle=new THREE.Mesh(new THREE.TubeGeometry(handleCurve,64,.16,20,false),
 const sphere=new THREE.SphereGeometry(1,48,32);
 function ellipsoid(material,x,y,z,sx,sy,sz,parent=cup){const m=new THREE.Mesh(sphere,material);m.position.set(x,y,z);m.scale.set(sx,sy,sz);m.castShadow=true;parent.add(m);return m;}
 const liquid=ellipsoid(blue,0,.88,0,.76,.095,.76);
+const leakFill=ellipsoid(blue,.22,.28,.84,.85,.34,.48);
 const drops=Array.from({length:4},(_,i)=>ellipsoid(blue,.5,.8,1.05,.075,.11,.075,character));
 const eyes=[];
 for(const x of [-.08,.39]){
