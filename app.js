@@ -97,7 +97,7 @@ const sayings=['漏了。咋了。','我有缺口，也有脾气。','水满了�
 let sayingIndex=0,bubbleTimer;
 function speak(){bubble.textContent=sayings[sayingIndex++%sayings.length];bubble.classList.remove('show');void bubble.offsetWidth;bubble.classList.add('show');clearTimeout(bubbleTimer);bubbleTimer=setTimeout(()=>bubble.classList.remove('show'),4400);}
 function aim(e){pointer.set(e.clientX/innerWidth*2-1,1-e.clientY/innerHeight*2);}
-addEventListener('pointermove',aim);
+canvas.style.touchAction='none';canvas.addEventListener('dblclick',()=>{orbitYaw=0;orbitPitch=0;});addEventListener('pointermove',aim);
 let audio;
 function boing(){
  try{
