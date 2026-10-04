@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+ <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+ <meta name="theme-color" content="#f6f1e8"><title>漏漏</title>
+ <link rel="stylesheet" href="style.css?v=4">
+</head>
+<body>
+ <main aria-label="可以触摸和拖动的漏漏果冻角色">
+  <div class="halo" aria-hidden="true"></div>
+  <div class="orbit orbit-a" aria-hidden="true"></div><div class="orbit orbit-b" aria-hidden="true"></div>
+  <img class="fallback" src="fallback.png" alt="黄色杯子与蓝色情绪组成的漏漏" draggable="false">
+  <canvas id="jelly" tabindex="0" role="button" aria-label="轻触漏漏，让它弹一弹；也可以拖动或按空格键"></canvas>
+  <div class="touch-ring" aria-hidden="true"></div>
+ </main>
+ <script type="module" src="app.js?v=8"></script>
+</body>
+</html>
