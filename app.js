@@ -95,7 +95,7 @@ const openedAt=performance.now();
 const gaze=new THREE.Vector2();
 const bubble=document.createElement('div');bubble.className='speech-bubble';bubble.setAttribute('role','status');bubble.setAttribute('aria-live','polite');document.querySelector('main').append(bubble);
 const sayings=['漏了。咋了。','我有缺口，也有脾气。','水满了会溢，我满了会怼。','今天不装了。真装不下。','杯子都破了，还讲什么杯德。','没装稳。也没装乖。'];
-let sayingIndex=0,bubbleTimer,introSaid=false;
+let sayingIndex=0,bubbleTimer,introSaid=false;playVoice('liuliu');addEventListener('pointerdown',()=>playVoice('liuliu'),{once:true});
 function speak(){bubble.textContent=sayings[sayingIndex++%sayings.length];bubble.classList.remove('show');void bubble.offsetWidth;bubble.classList.add('show');clearTimeout(bubbleTimer);bubbleTimer=setTimeout(()=>bubble.classList.remove('show'),4400);}
 function aim(e){pointer.set(e.clientX/innerWidth*2-1,1-e.clientY/innerHeight*2);}
 canvas.style.touchAction='none';canvas.addEventListener('dblclick',()=>{orbitYaw=0;orbitPitch=0;});addEventListener('pointermove',aim);
