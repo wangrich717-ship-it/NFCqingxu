@@ -1,3 +1,4 @@
+import {playVoice} from './sounds.js';
 import * as THREE from './vendor/three.module.js';
 import {Spring} from './physics.js';
 import {makeOrganicSurface} from './organic.js';
@@ -94,18 +95,11 @@ const openedAt=performance.now();
 const gaze=new THREE.Vector2();
 const bubble=document.createElement('div');bubble.className='speech-bubble';bubble.setAttribute('role','status');bubble.setAttribute('aria-live','polite');document.querySelector('main').append(bubble);
 const sayings=['漏了。咋了。','我有缺口，也有脾气。','水满了会溢，我满了会怼。','今天不装了。真装不下。','杯子都破了，还讲什么杯德。','没装稳。也没装乖。'];
-let sayingIndex=0,bubbleTimer;
+let sayingIndex=0,bubbleTimer,introSaid=false;
 function speak(){bubble.textContent=sayings[sayingIndex++%sayings.length];bubble.classList.remove('show');void bubble.offsetWidth;bubble.classList.add('show');clearTimeout(bubbleTimer);bubbleTimer=setTimeout(()=>bubble.classList.remove('show'),4400);}
 function aim(e){pointer.set(e.clientX/innerWidth*2-1,1-e.clientY/innerHeight*2);}
 canvas.style.touchAction='none';canvas.addEventListener('dblclick',()=>{orbitYaw=0;orbitPitch=0;});addEventListener('pointermove',aim);
-let audio;
-function boing(){
- try{
-  audio??=new (window.AudioContext||window.webkitAudioContext)();audio.resume();
-  const t=audio.currentTime,osc=audio.createOscillator(),gain=audio.createGain();osc.type='sine';osc.frequency.setValueAtTime(260,t);osc.frequency.exponentialRampToValueAtTime(75,t+.16);osc.frequency.exponentialRampToValueAtTime(125,t+.28);
-  gain.gain.setValueAtTime(0,t);gain.gain.linearRampToValueAtTime(.065,t+.012);gain.gain.exponentialRampToValueAtTime(.0001,t+.4);osc.connect(gain).connect(audio.destination);osc.start(t);osc.stop(t+.42);
- }catch{}
-}
+function boing(){playVoice('liuliu');canvas.dataset.sound='liuliu';}
 function tap(force=1){squash.kick(5.7*force);sway.kick((Math.random()-.5)*2.3);bounce.kick(3*force);boing();speak();if(navigator.vibrate)navigator.vibrate(12);canvas.dataset.interactions=String((+canvas.dataset.interactions||0)+1);}
 canvas.addEventListener('pointerdown',e=>{aim(e);dragging=true;dragMoved=false;startX=e.clientX;startY=e.clientY;lastX=e.clientX;lastY=e.clientY;pressAt=performance.now();pressTarget=-.17;canvas.setPointerCapture(e.pointerId);squash.kick(-2);});
 canvas.addEventListener('pointermove',e=>{pointer.set(e.clientX/innerWidth*2-1,1-e.clientY/innerHeight*2);if(dragging){if(Math.hypot(e.clientX-startX,e.clientY-startY)>7)dragMoved=true;if(dragMoved){orbitYaw+=(e.clientX-lastX)*.012;orbitPitch=Math.max(-1.25,Math.min(1.25,orbitPitch+(e.clientY-lastY)*.008));}sway.kick((e.clientX-lastX)*.025);squash.kick((e.clientY-lastY)*.009);lastX=e.clientX;lastY=e.clientY;}});
@@ -126,7 +120,7 @@ function animate(now){
  const arr=body.geometry.attributes.position.array;
  for(let i=0;i<arr.length;i+=3){const y=original[i+1];arr[i]=original[i]+Math.sin(y*4+time*12)*amount*.06;arr[i+1]=y;arr[i+2]=original[i+2]+Math.cos(y*3+time*11)*amount*.045;}
  body.geometry.attributes.position.needsUpdate=true;
- const intro=(now-openedAt)/1000;
+ const intro=(now-openedAt)/1000;if(!introSaid&&intro>2.6){introSaid=true;if(sayingIndex===0)speak();}
  const burst=reduce?10:Math.max(0,intro-.9);
  intactBody.visible=!reduce&&intro<.9;body.visible=reduce||intro>=.9;
  crack.visible=!reduce&&intro>.38&&intro<.9;

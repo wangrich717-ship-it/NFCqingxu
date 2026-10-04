@@ -1,3 +1,4 @@
+import {playVoice} from './sounds.js';
 import * as T from './vendor/three.module.js';
 import {Spring} from './physics.js';
 import {characters} from './characters.js';
@@ -53,9 +54,9 @@ if(spec.id==='huanhuan'){
  eye(-.23,.48,{parent:parts.arch,white:false});eye(.17,.48,{parent:parts.arch,white:false});stroke([[-.35,.69],[-.24,.74]],mats.black,.022,parts.arch);stroke([[.2,.73],[.32,.66]],mats.black,.022,parts.arch);parts.supportHand=mesh(shape([[M,-.78,-.12],[Q,-.94,-.06,-.81,.06],[Q,-.78,.23,-.67,.11],[Q,-.55,.22,-.54,.06],[Q,-.44,.08,-.48,-.05],[Q,-.57,-.19,-.78,-.12]]),mats.blue,parts.arch,.04);parts.supportHand.position.z=.205;
 }else if(spec.id==='raorao'){
  parts.loop=new T.Group();root.add(parts.loop);
- const s=shape([[M,-.51,1],[C,-.91,.42,-1,-.64,-.42,-.87],[C,.05,-1.05,.85,-.74,.66,-.21],[C,.61,.04,.33,.19,.15,.36],[C,.89,.15,.98,.78,.39,.9],[C,.11,1,-.1,.81,-.23,.67],[L,-.36,1.05],[Q,-.46,1.16,-.51,1]]);const h=new T.Path();h.moveTo(-.18,.07);h.bezierCurveTo(-.4,-.07,-.47,-.49,-.1,-.5);h.bezierCurveTo(.24,-.45,.13,-.14,-.18,.07);s.holes.push(h);mesh(s,mats.deep,parts.loop);
- oval(.34,.61,.31,.23,mats.salmon,parts.loop,.185);eye(.18,.58,{parent:parts.loop});eye(.48,.68,{parent:parts.loop});const curve=new T.CatmullRomCurve3([[-.42,.62],[-.62,.19],[-.47,-.09],[-.57,-.42],[-.2,-.64],[.02,-.84]].map(([x,y])=>new T.Vector3(x,y,.23)));const vs=[];
- for(let i=0;i<=120;i++){const pt=curve.getPoint(i/120),t=curve.getTangent(i/120);vs.push(pt.x-t.y*(.045*Math.sin(Math.PI*i/120)**.28),pt.y+t.x*(.045*Math.sin(Math.PI*i/120)**.28),.23,pt.x+t.y*(.045*Math.sin(Math.PI*i/120)**.28),pt.y-t.x*(.045*Math.sin(Math.PI*i/120)**.28),.23);}const indices=[];for(let i=0;i<120;i++){let j=i*2;indices.push(j,j+1,j+2,j+1,j+3,j+2);}const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(vs,3));geo.setIndex(indices);geo.computeVertexNormals();parts.threadBase=Float32Array.from(geo.attributes.position.array);parts.thread=new T.Mesh(geo,mats.salmon);parts.loop.add(parts.thread);
+ const s=shape([[M,-.51,1],[C,-.76,.85,-.96,.2,-.91,-.45],[C,-.89,-.87,-.54,-.98,-.05,-.96],[C,.51,-1.02,.82,-.71,.67,-.31],[Q,.58,-.07,.24,-.04],[C,.48,-.31,.28,-.57,.02,-.49],[C,-.25,-.42,-.23,-.08,-.09,.16],[C,.09,.27,.4,.12,.62,.42],[C,.99,.91,.33,1.18,.03,.86],[Q,-.19,.58,-.24,.46],[Q,-.16,.82,-.32,1.1],[Q,-.4,1.23,-.51,1]]);mesh(s,mats.deep,parts.loop);
+ oval(.35,.65,.34,.23,mats.salmon,parts.loop,.185);eye(.18,.58,{parent:parts.loop});eye(.48,.68,{parent:parts.loop});const curve=new T.CatmullRomCurve3([[-.3,.62],[-.58,.2],[-.49,-.04],[-.62,-.48],[-.2,-.66],[.03,-.84],[.38,-.96]].map(([x,y])=>new T.Vector3(x,y,.23)));const vs=[];
+ for(let i=0;i<=120;i++){const pt=curve.getPoint(i/120),t=curve.getTangent(i/120);vs.push(pt.x-t.y*((.008+.052*Math.sin(Math.PI*i/120)**.8)*(i>105?1.6:1)),pt.y+t.x*((.008+.052*Math.sin(Math.PI*i/120)**.8)*(i>105?1.6:1)),.23,pt.x+t.y*((.008+.052*Math.sin(Math.PI*i/120)**.8)*(i>105?1.6:1)),pt.y-t.x*((.008+.052*Math.sin(Math.PI*i/120)**.8)*(i>105?1.6:1)),.23);}const indices=[];for(let i=0;i<120;i++){let j=i*2;indices.push(j,j+1,j+2,j+1,j+3,j+2);}const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(vs,3));geo.setIndex(indices);geo.computeVertexNormals();parts.threadBase=Float32Array.from(geo.attributes.position.array);parts.thread=new T.Mesh(geo,mats.salmon);parts.loop.add(parts.thread);
 }else if(spec.id==='dundun'){
  parts.low=new T.Group();root.add(parts.low);
  blob([[M,-1.05,-.47],[C,-1.02,-.08,-.68,.43,-.45,.53],[Q,-.2,.65,.77,.79],[C,1.01,.8,1.03,.19,1.15,-.4],[Q,1.2,-.64,.88,-.65],[Q,-.66,-.71,-.94,-.62],[Q,-1.1,-.57,-1.05,-.47]],mats.moss,parts.low);
@@ -77,7 +78,7 @@ const bubble=document.createElement('div');bubble.className='speech-bubble';bubb
 let epoch=performance.now(),actionAt=0,action=0,line=0,spoken=false;const pointer=new T.Vector2(),gaze=new T.Vector2();
 const duration=.85;
 function speak(){bubble.textContent=spec.lines[line++%spec.lines.length];bubble.classList.add('show');}
-function tap(){actionAt=(performance.now()-epoch)/1000;action++;spoken=false;bubble.classList.remove('show');canvas.dataset.interactions=String(action);}
+function tap(){playVoice(spec.id);canvas.dataset.sound=spec.id;actionAt=(performance.now()-epoch)/1000;action++;spoken=false;bubble.classList.remove('show');canvas.dataset.interactions=String(action);}
 function aim(e){pointer.set(e.clientX/innerWidth*2-1,1-e.clientY/innerHeight*2);}
 let yaw=0,pitch=0,drag=null;
 canvas.style.touchAction='none';
@@ -94,7 +95,7 @@ function render(now){requestAnimationFrame(render);const dt=Math.min((now-last)/
  gaze.lerp(pointer,1-Math.exp(-dt*8));root.rotation.y=yaw-.08+gaze.x*.06;root.rotation.x=.04+pitch;canvas.dataset.orbit=yaw.toFixed(3);root.rotation.z=0;root.position.y=0;root.scale.setScalar(1);
  const loop=reduced?0:Math.sin(time*4.8),bounce=reduced?0:Math.sin(time*6.5),pop=reduced?0:Math.sin(age*22)*Math.exp(-age*5);
  if(parts.fold){const open=ease(age/.32);parts.fold.scale.set(.61+.57*open+loop*.115+pop*.1,.79-loop*.055-pop*.04,1);}
- if(parts.cover){const reveal=ease((age-.12)/.42)*(reduced?1:ease((.5+.5*Math.cos(Math.max(0,age-.55)*3.8))));parts.face.visible=reveal>.18;parts.hand.visible=reveal>.35;parts.face.position.set(0,-(1-reveal)*.25+loop*.035,-.65*(1-reveal));parts.hand.position.z=.2-.65*(1-reveal);canvas.dataset.reveal=reveal.toFixed(3);parts.hand.position.y=-.59+.2*reveal+loop*.035;parts.hand.rotation.z=loop*.09;
+ if(parts.cover){const reveal=ease((age-.12)/.42)*(reduced?1:ease((.5+.5*Math.cos(Math.max(0,age-.55)*3.8))));parts.face.visible=reveal>.18;parts.hand.visible=true;parts.face.position.set(0,-(1-reveal)*.25+loop*.035,-.65*(1-reveal));parts.hand.position.z=.2-.85*(1-reveal);canvas.dataset.reveal=reveal.toFixed(3);parts.hand.position.y=-.78+.39*reveal+loop*.035;parts.hand.rotation.z=loop*.09;
  const a=parts.cover.geometry.attributes.position.array,b=parts.coverBase;for(let i=0;i<a.length;i+=3){const x=b[i],y=b[i+1],weight=Math.max(0,1-Math.abs(x)/.76)*Math.max(0,Math.min(1,(-y-.19)/.25));a[i+1]=y-weight*((1-reveal)*.52-loop*.045*reveal);}parts.cover.geometry.attributes.position.needsUpdate=true;parts.cover.scale.y=1+loop*.016;}
  if(parts.lean){const tip=ease(age/.32);parts.lean.rotation.z=.2*(1-tip)-.12*tip+pop*.055+loop*.055;parts.lean.position.set(.08*tip,-.06*tip+loop*.025,0);parts.foot.scale.set(1+loop*.045,1-loop*.12,1);}
  if(parts.ring){parts.hand.rotation.z=Math.sin(time*7)*.34;parts.ring.scale.set(1+loop*.045,1.02-loop*.045,1);}
