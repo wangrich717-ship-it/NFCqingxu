@@ -59,7 +59,7 @@ if(spec.id==='huanhuan'){
  eye(-.37,-.01,{parent:parts.page});eye(.35,.45,{parent:parts.page});
  parts.flap=blob([[M,-.84,-.02],[Q,-.88,.06,-.76,.67],[Q,-.72,.81,-.46,.8],[L,.55,.91],[Q,.04,.15,-.84,-.02]],mats.purple,parts.page);parts.flap.position.z=.18;
 }else if(spec.id==='kaokao'){
- parts.tall=new T.Group();parts.small=new T.Group();root.add(parts.tall,parts.small);
+ parts.tall=new T.Group();parts.small=new T.Group();parts.small.position.z=.15;root.add(parts.tall,parts.small);
  blob([[M,-.95,-.7],[C,-1.14,-.77,-1.06,-.37,-.92,.05],[C,-.86,.85,-.44,1.06,-.15,.74],[C,.05,.52,-.16,.2,-.13,-.06],[C,.27,-.61,-.04,-.8,-.49,-.78],[L,-.95,-.7]],mats.blue,parts.tall);
  blob([[M,.03,-.71],[C,-.12,-.64,.21,-.3,.01,.01],[C,-.25,.54,.38,.71,.58,.34],[C,.72,.01,.88,-.25,1,-.52],[Q,1.08,-.79,.7,-.76],[L,.03,-.71]],mats.salmon,parts.small);
  eye(-.44,.51,{parent:parts.tall});eye(.4,.04,{parent:parts.small,white:false,sleep:true});
